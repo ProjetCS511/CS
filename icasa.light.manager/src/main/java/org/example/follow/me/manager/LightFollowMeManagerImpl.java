@@ -7,9 +7,11 @@ import org.apache.felix.ipojo.annotations.Bind;
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
+import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.Unbind;
 import org.apache.felix.ipojo.annotations.Validate;
+import org.example.follow.me.api.EnergyGoal;
 import org.example.follow.me.api.FollowMeAdministration;
 import org.example.follow.me.api.FollowMeConfiguration;
 import org.example.follow.me.api.IlluminanceGoal;
@@ -20,7 +22,7 @@ import org.example.follow.me.api.IlluminanceGoal;
 @Component
 //Create an instance of the component
 @Instantiate(name = "FollowMeManager-1")
-
+@Provides(specifications= FollowMeAdministration.class)
 public class LightFollowMeManagerImpl implements FollowMeAdministration {
 
 	@Requires(optional=true)
@@ -65,6 +67,25 @@ public class LightFollowMeManagerImpl implements FollowMeAdministration {
 			return IlluminanceGoal.MEDIUM;
 		case 3 :
 			return IlluminanceGoal.FULL;
+		default:
+			return null;
+		}
+	}
+
+	public void setEnergySavingGoal(EnergyGoal energyGoal) {
+		followMeConfiguration[0].setMaximumAllowedEnergyInRoom(energyGoal.getMaximumEnergyInRoom());
+		
+	}
+
+
+	public EnergyGoal getEnergyGoal() {
+		switch ((int)followMeConfiguration[0].getMaximumAllowedEnergyInRoom()){
+		case 100 :
+			return EnergyGoal.LOW;
+		case 200 :
+			return EnergyGoal.MEDIUM;
+		case 300 :
+			return EnergyGoal.HIGH;
 		default:
 			return null;
 		}

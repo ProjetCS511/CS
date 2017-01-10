@@ -22,4 +22,14 @@ public interface FollowMeConfiguration {
      *            the new maximum number of lights to turn on
      */
     public void setMaximumNumberOfLightsToTurnOn(int maximumNumberOfLightsToTurnOn);
+    
+    public double getMaximumAllowedEnergyInRoom() ;
+    
+    /**
+     * Sets the maximum allowed energy consumption in Watts in each room
+     * 
+     * @param maximumEnergy
+     *            the maximum allowed energy consumption in Watts/hours in each room
+     */
+    public void setMaximumAllowedEnergyInRoom(double maximumEnergy);
 }

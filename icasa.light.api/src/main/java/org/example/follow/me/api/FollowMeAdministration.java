@@ -1,5 +1,7 @@
 package org.example.follow.me.api;
 
+import org.example.follow.me.api.EnergyGoal;
+
 /**
  * The Interface FollowMeAdministration allows the administrator to configure
  * its preference regarding the management of the Follow Me application.
@@ -21,5 +23,18 @@ public interface FollowMeAdministration {
      * @return the new illuminance preference
      */
     public IlluminanceGoal getIlluminancePreference();
+    
+    /**
+     * Configure the energy saving goal.
+     * @param energyGoal : the targeted energy goal.
+     */
+    public void setEnergySavingGoal(EnergyGoal energyGoal);
+ 
+    /**
+     * Gets the current energy goal.
+     * 
+     * @return the current energy goal.
+     */
+    public EnergyGoal getEnergyGoal();
  
 }

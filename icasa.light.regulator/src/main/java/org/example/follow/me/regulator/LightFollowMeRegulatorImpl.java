@@ -8,6 +8,7 @@ import org.apache.felix.ipojo.annotations.Bind;
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
 import org.apache.felix.ipojo.annotations.Invalidate;
+import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.Unbind;
 import org.apache.felix.ipojo.annotations.Validate;
@@ -24,8 +25,18 @@ import fr.liglab.adele.icasa.device.presence.PresenceSensor;
 @Component
 //Create an instance of the component
 @Instantiate(name = "my.first.follow.me")
+@Provides(specifications=FollowMeConfiguration.class)
 public class LightFollowMeRegulatorImpl implements DeviceListener, FollowMeConfiguration {
 
+	
+	/**
+	 * The maximum number of lights to turn on when a user enters the room :
+	 **/
+	private int maxLightsToTurnOnPerRoom = 1;
+	/**
+	* The maximum energy consumption allowed in a room in Watt:
+	**/
+	private double maximumEnergyConsumptionAllowedInARoom = maxLightsToTurnOnPerRoom * 100.0d;
 	/**
 	 * The name of the LOCATION property
 	 */
@@ -36,10 +47,7 @@ public class LightFollowMeRegulatorImpl implements DeviceListener, FollowMeConfi
 	 */
 	public static final String LOCATION_UNKNOWN = "unknown";
 
-	/**
-	 * The maximum number of lights to turn on when a user enters the room :
-	 **/
-	private int maxLightsToTurnOnPerRoom = 2;
+
 
 	@Requires(optional=true)
 	/** Field for presenceSensors dependency */
@@ -343,6 +351,18 @@ public class LightFollowMeRegulatorImpl implements DeviceListener, FollowMeConfi
 	@Override
 	public void setMaximumNumberOfLightsToTurnOn(int maximumNumberOfLightsToTurnOn) {
 		this.maxLightsToTurnOnPerRoom=maximumNumberOfLightsToTurnOn;
+		
+	}
+
+	@Override
+	public double getMaximumAllowedEnergyInRoom() {
+		return maximumEnergyConsumptionAllowedInARoom;
+	}
+
+	@Override
+	public void setMaximumAllowedEnergyInRoom(double maximumEnergy) {
+		this.maxLightsToTurnOnPerRoom = (int)maximumEnergy /100;
+		this.maximumEnergyConsumptionAllowedInARoom=maximumEnergy;
 		
 	}
 
