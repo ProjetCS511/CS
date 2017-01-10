@@ -32,7 +32,7 @@
             <artifactId>context.api</artifactId>
         </dependency>
              <dependency>
-            <groupId>fr.liglab.adele.icasa.teaching</groupId>
+            <groupId>fr.liglab.adele.icasa.teaching.bourki</groupId>
             <artifactId>icasa.light.api</artifactId>
             <version>${project.version}</version>
         </dependency>

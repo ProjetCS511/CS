@@ -28,6 +28,7 @@ import fr.liglab.adele.icasa.device.presence.PresenceSensor;
 @Provides(specifications=FollowMeConfiguration.class)
 public class LightFollowMeRegulatorImpl implements DeviceListener, FollowMeConfiguration {
 
+
 	
 	/**
 	 * The maximum number of lights to turn on when a user enters the room :
@@ -37,64 +38,56 @@ public class LightFollowMeRegulatorImpl implements DeviceListener, FollowMeConfi
 	* The maximum energy consumption allowed in a room in Watt:
 	**/
 	private double maximumEnergyConsumptionAllowedInARoom = maxLightsToTurnOnPerRoom * 100.0d;
-	/**
-	 * The name of the LOCATION property
-	 */
-	public static final String LOCATION_PROPERTY_NAME = "Location";
-
-	/**
-	 * BinaryLight The name of the location for unknown value
-	 */
-	public static final String LOCATION_UNKNOWN = "unknown";
 
 
 
-	@Requires(optional=true)
+
+	@Requires(id="presenceSensor",optional=true)
 	/** Field for presenceSensors dependency */
 	private PresenceSensor[] presenceSensors;
 
-	@Requires(optional=true)
+	@Requires(id="binaryLight",optional=true)
 	/** Field for binaryLights dependency */
 	private BinaryLight[] binaryLights;
 
-	@Requires(optional=true)
+	@Requires(id="dimmerLight",optional=true)
 	private DimmerLight[] dimmerLights;
 
-	@Bind
+	@Bind(id="binaryLight")
 	/** Bind Method for binaryLights dependency */
 	public void bindBinaryLight(BinaryLight binaryLight, Map properties) {
 		System.out.println("bind binary light " + binaryLight.getSerialNumber());
 		binaryLight.addListener(this);
 	}
 
-	@Unbind
+	@Unbind(id="binaryLight")
 	/** Unbind Method for binaryLights dependency */
 	public void unbindBinaryLight(BinaryLight binaryLight, Map properties) {
 		System.out.println("unbind dimmer light " + binaryLight.getSerialNumber());
 		binaryLight.removeListener(this);
 	}
 
-	@Unbind
+	@Unbind(id="dimmerLight")
 	/** Unbind Method for dependency */
 	public void unbindDimmerLight(DimmerLight dimmerLight, Map properties) {
 		System.out.println("unbind dimmerlight " + dimmerLight.getSerialNumber());
 		dimmerLight.removeListener(this);
 	}
 
-	@Bind
+	@Bind(id="dimmerLight")
 	public void bindDimmerLight(DimmerLight dimmerLight, Map properties) {
 		System.out.println("bind dimmer light " + dimmerLight.getSerialNumber());
 		dimmerLight.addListener(this);
 	}
 
-	@Bind
+	@Bind(id="presenceSensor")
 	/** Bind Method for presenceSensors dependency */
 	public synchronized void bindPresenceSensor(PresenceSensor presenceSensor, Map properties) {
 		System.out.println("bind presence sensor " + presenceSensor.getSerialNumber());
 		presenceSensor.addListener(this);
 	}
 
-	@Unbind
+	@Unbind(id="presenceSensor")
 	/** Unbind Method for presenceSensors dependency */
 	public synchronized void unbindPresenceSensor(PresenceSensor presenceSensor, Map properties) {
 		System.out.println("Unbind presence sensor " + presenceSensor.getSerialNumber());
@@ -134,6 +127,18 @@ public class LightFollowMeRegulatorImpl implements DeviceListener, FollowMeConfi
 
 	}
 
+	
+	
+	/**
+	 * The name of the LOCATION property
+	 */
+	public static final String LOCATION_PROPERTY_NAME = "Location";
+
+	/**
+	 * BinaryLight The name of the location for unknown value
+	 */
+	public static final String LOCATION_UNKNOWN = "unknown";
+	
 	@Override
 	public void devicePropertyModified(GenericDevice device, String propertyName, Object oldValue, Object newValue) {
 		// we assume that we listen only to presence sensor events (otherwise
@@ -229,6 +234,7 @@ public class LightFollowMeRegulatorImpl implements DeviceListener, FollowMeConfi
 	}
 
 	/**
+	 * 
 	 * Return nb of Lights on per location
 	 * 
 	 * @param location
