@@ -2,17 +2,12 @@ package org.example.follow.me.manager.command;
 
 import java.util.Map;
 
-import org.apache.felix.ipojo.annotations.Bind;
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Requires;
-import org.apache.felix.ipojo.annotations.Unbind;
-import org.apache.felix.ipojo.annotations.Validate;
-import org.example.follow.me.api.FollowMeAdministration;
-import org.example.follow.me.api.IlluminanceGoal;
-import org.example.follow.me.api.TemperatureManagerAdministration;
-import org.example.follow.me.api.EnergyGoal;
+import org.example.follow.me.manager.EnergyGoal;
+import org.example.follow.me.manager.FollowMeAdministration;
+import org.example.follow.me.manager.IlluminanceGoal;
 
 import fr.liglab.adele.icasa.command.handler.Command;
 import fr.liglab.adele.icasa.command.handler.CommandProvider;
@@ -21,36 +16,31 @@ import fr.liglab.adele.icasa.command.handler.CommandProvider;
 @Component
 // Create an instance of the component
 @Instantiate(name = "follow.me.mananger.command")
-
 // Use the handler command and declare the command as a command provider. The
 // namespace is used to prevent name collision.
 @CommandProvider(namespace = "followme")
-public class FollowMeManagerCommandImpl implements  FollowMeAdministration {
+public class FollowMeManagerCommandImpl {
 
 	/** Field for followMeCommand dependency */
-	@Requires(optional=true)
+	// @Requires(optional=true)
 	private FollowMeAdministration[] followMeCommand;
 
 	/** Bind Method for followMeCommand dependency */
-	@Bind
 	public void bindFollowMeCommand(FollowMeAdministration followMeAdministration, Map properties) {
 		// TODO: Add your implementation code here
-	} 
+	}
 
 	/** Unbind Method for followMeCommand dependency */
-	@Unbind
 	public void unbindFollowMeCommand(FollowMeAdministration followMeAdministration, Map properties) {
 		// TODO: Add your implementation code here
 	}
- 
+
 	/** Component Lifecycle Method */
-	@Invalidate
 	public void stop() {
 		// TODO: Add your implementation code here
 	}
 
 	/** Component Lifecycle Method */
-	@Validate
 	public void start() {
 		// TODO: Add your implementation code here
 		System.out.println("start command\n");
@@ -75,6 +65,7 @@ public class FollowMeManagerCommandImpl implements  FollowMeAdministration {
 
 		// TODO : Here you have to convert the goal string into an illuminance
 		// goal and fail if the entry is not "SOFT", "MEDIUM" or "HIGH"
+		String soft = new String("SOFT");
 		if (new String("SOFT").equals(goal)) {
 			m_administrationService.setIlluminancePreference(IlluminanceGoal.SOFT);
 		} else if (new String("MEDIUM").equals(goal)) {
@@ -88,10 +79,9 @@ public class FollowMeManagerCommandImpl implements  FollowMeAdministration {
 	}
 
 	@Command
-	public IlluminanceGoal getIlluminancePreference() {
+	public void getIlluminancePreference() {
 		// TODO : implement the command that print the current value of the goal
 		System.out.println("The illuminance goal is " + m_administrationService.getIlluminancePreference().toString()); // ...
-		return m_administrationService.getIlluminancePreference();
 	}
 	
 	// Each command should start with a @Command annotation
@@ -110,48 +100,8 @@ public class FollowMeManagerCommandImpl implements  FollowMeAdministration {
 		}
 
 		@Command
-		public EnergyGoal getEnergyGoal() {
+		public void getEnergyGoal() {
 			// TODO : implement the command that print the current value of the goal
 			System.out.println("The energy goal goal is " + m_administrationService.getEnergyGoal().toString()); // ...
-			return m_administrationService.getEnergyGoal();
 		}
-
-	/////////////////////////////////////////// Temperature
-		
-		
-		 // Declare a dependency to a TemperatureAdministration service
-	    @Requires
-	    private TemperatureManagerAdministration m_administrationServicetemp;
-	 
-	 
-	    /**
-	     * Command implementation to express that the temperature is too high in the given room
-	     *
-	     * @param room the given room
-	     */
-	 
-	    // Each command should start with a @Command annotation
-	    @Command
-	    public void tempTooHigh(String room) {
-	        m_administrationServicetemp.temperatureIsTooHigh(room);
-	    }
-	 
-	    @Command
-	    public void tempTooLow(String room){
-	    	m_administrationServicetemp.temperatureIsTooLow(room);
-	    }
-
-		@Override
-		public void setIlluminancePreference(IlluminanceGoal illuminanceGoal) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void setEnergySavingGoal(EnergyGoal energyGoal) {
-			// TODO Auto-generated method stub
-			
-		}
-
-	
 }

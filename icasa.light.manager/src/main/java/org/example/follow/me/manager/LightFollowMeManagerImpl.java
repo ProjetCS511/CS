@@ -15,20 +15,24 @@ import org.example.follow.me.api.EnergyGoal;
 import org.example.follow.me.api.FollowMeAdministration;
 import org.example.follow.me.api.FollowMeConfiguration;
 import org.example.follow.me.api.IlluminanceGoal;
+import org.example.follow.me.api.TemperatureManagerAdministration;
+import org.example.follow.me.api.TemperatureConfiguration;
 
-
-
+ 
 //Define this class as an implementation of a component :
 @Component
 //Create an instance of the component
 @Instantiate(name = "FollowMeManager-1")
-@Provides(specifications= FollowMeAdministration.class)
-public class LightFollowMeManagerImpl implements FollowMeAdministration {
+@Provides(specifications= {FollowMeAdministration.class , TemperatureManagerAdministration.class})
+public class LightFollowMeManagerImpl implements FollowMeAdministration, TemperatureManagerAdministration {
 
 	@Requires(optional=true)
 	/** Field for followMeConfiguration dependency */
 	private FollowMeConfiguration[] followMeConfiguration;
 
+	@Requires
+	private FollowMeAdministration m_administrationService;
+	
 	@Bind
 	/** Bind Method for followMeConfiguration dependency */
 	public void bindFollowMeConfiguration(FollowMeConfiguration followMeConfiguration, Map properties) {
@@ -90,4 +94,54 @@ public class LightFollowMeManagerImpl implements FollowMeAdministration {
 			return null;
 		}
 	}
+	
+	
+	//////////////////////////////////// Temperature
+	@Requires(optional=true)
+	/** Field for TemperatureConfiguration dependency */
+	private TemperatureConfiguration[] TemperatureConfiguration;
+	
+	
+	
+	@Bind
+	/** Bind Method for TemperatureConfiguration dependency */
+	public void bindTemperatureConfiguration(TemperatureConfiguration temperatureConfiguration, Map properties) {
+		// TODO: Add your implementation code here
+	}
+
+	@Unbind
+	/** Unbind Method for TemperatureConfiguration dependency */
+	public void unbindTemperatureConfiguration(TemperatureConfiguration temperatureConfiguration, Map properties) {
+		// TODO: Add your implementation code here
+	}
+
+	
+	@Override
+	public void temperatureIsTooHigh(String roomName) {
+		float currentTemp= TemperatureConfiguration[0].getTargetedTemperature(roomName);
+		TemperatureConfiguration[0].setTargetedTemperature(roomName, currentTemp-5);
+		while ( TemperatureConfiguration[0].getTargetedTemperature(roomName) >= currentTemp -5){
+			try {
+				wait(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public void temperatureIsTooLow(String roomName) {
+		float currentTemp= TemperatureConfiguration[0].getTargetedTemperature(roomName);
+		TemperatureConfiguration[0].setTargetedTemperature(roomName, currentTemp+5);
+		while ( TemperatureConfiguration[0].getTargetedTemperature(roomName) <= currentTemp +5){
+			try {
+				wait(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	
 }
